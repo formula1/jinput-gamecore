@@ -272,7 +272,6 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 			currentPlayers.getItemAt(i).end();
 			currentPlayers.getItemAt(i).setDebug(false);
 			currentPlayers.getItemAt(i).playernumber = i;
-			currentPlayers.getItemAt(i).removeListener(this);
 		}
 
 		
@@ -533,8 +532,20 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 	}
 
 	@Override
-	public void applyPlayers(Player[] players, Game g) {
+	public void applyPlayers(Player[] players) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void playerEnter(int playernumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playerLeave(int playernumber) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
