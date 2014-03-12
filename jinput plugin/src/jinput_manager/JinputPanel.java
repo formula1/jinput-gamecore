@@ -305,12 +305,11 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 		String set = o.getText().substring(4);
 		butear = set;
 		unbind(set);
-
 	}
 	
-	public void push(int playernumber, Object o) {
+	public void push(int playernumber, Component o) {
 		if(playernumber == currentPlayer.playernumber){
-			Component temp = (Component)o;
+			Component temp = o;
 			if(waiting != 0L && System.currentTimeMillis() - waiting < 5000 && currentPlayer.bindings.get(temp) == null){
 				System.out.println("Comp Ident="+temp.getIdentifier().getClass().toString());
 				if(temp.getIdentifier() != Component.Identifier.Axis.POV && temp.getPollData() > 0.5f){
@@ -348,7 +347,7 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 		currentPlayer.bind(com,posneg, setting);
 		String butconname = com.getName();
 		if(com.getIdentifier() == Component.Identifier.Axis.POV){
-			butconname += ":"+com.getPollData();
+			butconname += "|"+com.getPollData();
 		}
 		if(posneg){
 			butconname += "-";
@@ -367,88 +366,12 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 
 	
 	public void save(){
-        JFileChooser fc = new JFileChooser();
-
-        int returnVal = fc.showSaveDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            //This is where a real application would save the file.
-            String loc = file.getAbsolutePath();
-    		String f;
-    		Iterator i = currentPlayer.bindings.entrySet().iterator();
-    		f = "!"+currentPlayer.controller.getName()+",";
-    		while (i.hasNext()) {
-    			Map.Entry<Component, String> pairs = (Map.Entry)i.next();
-    			f += pairs.getKey().getName()+":"+pairs.getValue()+",";
-    		}
-    		try{
-    			BufferedWriter outputStream = new BufferedWriter(new FileWriter(loc));
-    			outputStream.write(f);
-    			outputStream.close();
-    		}catch(Exception e){
-    			e.printStackTrace();
-    		}
-
-        } else {
-        	throw new Error("cannot save");
-        }
-
+		JinputSaveLoad.save(this, currentPlayer);
 	}
 
 	
 	public void load(){
-        JFileChooser fc = new JFileChooser();
-
-        int returnVal = fc.showOpenDialog(this);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File loc = fc.getSelectedFile();
-            //This is where a real application would open the file.
-    		String c="";
-    		String m;
-    		try{
-    			BufferedReader inputStream = new BufferedReader(new FileReader(loc));
-    			while ((m = inputStream.readLine()) != null){
-    				c += m;
-    			}
-    			inputStream.close();
-    		}catch(Exception e){
-    			e.printStackTrace();
-    		}
-    		String[] buts = c.split(",");
-    		Controller cur = null;
-    		Component[] cos = new Component[0];
-    		for(int i=0;i<buts.length;i++){
-    			if(buts[i].startsWith("!")){
-    				for(int x=0;x<availableControllers.getItemCount();x++)
-    					if(availableControllers.getItemAt(x).getName().equals(buts[i].substring(1))){
-    						cur = availableControllers.getItemAt(x);
-    						cos = cur.getComponents();
-    						break;
-    					}
-    				if(cur==null)throw new Error("controller doesn't exsist");
-    			}else if(cur != null){
-    				String[] comp_butt = buts[i].split(":");
-    				for(int j=0;j<cos.length;j++){
-    					if(comp_butt[0].equals(cos[j].getName())){
-    						bind(cos[j], true, comp_butt[1]);
-    						comp_butt[0] = "GGGG";
-    						break;
-    					}else if(comp_butt[0].equals(cos[j].getName()+"-")){
-    						bind(cos[j], false, comp_butt[1]);
-    						comp_butt[0] = "GGGG";
-    						break;
-    					}
-    				}
-    				if(comp_butt[0] != "GGGG") throw new Error("nonexsistant button");
-    			}
-    		}
-    		if(cur != null) availableControllers.setSelectedItem(cur);;
-
-        } else {
-        	throw new Error("cannot open");
-        }
-
+		JinputSaveLoad.load(this,currentPlayer);
 	}
 		
 	
@@ -457,7 +380,7 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 	
 	//-----------------------------------------------
 	
-	private class ButContain extends JPanel{
+	public class ButContain extends JPanel{
 		String name;
 		JButton but;//Turn on the listener
 		JLabel compo;//The ocmponent that is either on or off
@@ -531,7 +454,6 @@ public class JinputPanel extends Player_Panel implements JinputListener{
 			}
 	}
 
-	@Override
 	public void applyPlayers(Player[] players) {
 		// TODO Auto-generated method stub
 	}

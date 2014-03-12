@@ -72,7 +72,7 @@ public class JinputPlayer extends Player{
 		if(c.getIdentifier() == Component.Identifier.Axis.POV){
 			String pov = POV.get(c.getPollData());
 			if(pov.length()>1) return;
-			bindings.put(c.getName()+":"+pov, s);
+			bindings.put(c.getName()+"|"+pov, s);
 			
 		}else{
 			if(posneg)
@@ -113,18 +113,18 @@ public class JinputPlayer extends Player{
 					byte[] dirs = {'u', 'l', 'd', 'r'};
 					if(pov == "o"){
 						for(byte i =0; i<dirs.length;i++)
-							if(	(temp2 = bindings.get(temp.getName()+":"+dirs[i])) != null
+							if(	(temp2 = bindings.get(temp.getName()+"|"+dirs[i])) != null
 							&&	buttons.get(temp2) == 1f
 							)	ret.put(temp2, 0f);
 					}else{
 						for(byte i =0; i<pov.length();i++)
-							if(	(temp2 = bindings.get(temp.getName()+":"+pov.charAt(i))) != null
+							if(	(temp2 = bindings.get(temp.getName()+"|"+pov.charAt(i))) != null
 							&&	buttons.get(temp2) != 1f
 							){
 								ret.put(temp2, 1f);
 								for(byte j =0; j<dirs.length;j++)
 									if(dirs[j] == pov.charAt(i)){
-										if((temp2 = bindings.get(temp.getName()+":"+dirs[j])) != null
+										if((temp2 = bindings.get(temp.getName()+"|"+dirs[j])) != null
 										&&	buttons.get(temp2) == 1f
 										)	ret.put(temp2, 0f);
 									}
